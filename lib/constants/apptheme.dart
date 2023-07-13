@@ -6,4 +6,6 @@ class AppTheme {
   final Color splashscreenbg =
       const Color.fromARGB(255, 99, 24, 175); //First Screen background color
   final welcomefont = GoogleFonts.capriola; //Welcome Text in Splashscreen
+  final welcomesubtitlefont = GoogleFonts.courgette;
+  final appfonttheme = GoogleFonts.lexend; //Most used text font in this app
 }
