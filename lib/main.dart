@@ -1,4 +1,4 @@
-import 'package:craftui/screens/login_signinscreen.dart';
+import 'package:craftui/screens/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Flutter Demo',
-      home: LoginSignup(),
+      home: Home(),
     );
   }
 }

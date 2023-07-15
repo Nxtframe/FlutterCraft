@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "848331948618",
+    "project_id": "craftui",
+    "storage_bucket": "craftui.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848331948618:android:d8af2dbdf12e1264229cb3",
+        "android_client_info": {
+          "package_name": "com.example.craftui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "848331948618-ecj6ll9p9cf9upjfme2q5i80g3ots7q4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClnPjw_J65HgxVrmbDmzHWDsTb87iEMjQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "848331948618-ecj6ll9p9cf9upjfme2q5i80g3ots7q4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
