@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../constants/apptheme.dart';
+import 'login_signinscreen.dart';
 
 class Onboarding extends ConsumerStatefulWidget {
   const Onboarding({Key? key}) : super(key: key);
@@ -21,19 +22,19 @@ class _OnboardingState extends ConsumerState<Onboarding>
   final List<OnboardingPage> _pages = [
     //The List of Pages
     OnboardingPage(
-      imagePath: 'assets/Sequence01.gif',
+      imagePath: 'assets/gif/plates.gif',
       title: 'Create Your Own Plate',
       description:
           'Create unforgettable memories with our unique feature to curate your favorite cuisines and food, tailored to your special occasion.',
     ),
     OnboardingPage(
-      imagePath: 'assets/test.jpg',
+      imagePath: 'assets/gif/SecondFix.gif',
       title: 'Exquisite Catering',
       description:
           'Experience culinary artistry like never before with our innovative and exquisite cuisine creations.',
     ),
     OnboardingPage(
-      imagePath: 'assets/test.jpg',
+      imagePath: 'assets/gif/Third.gif',
       title: 'Personal Order Executive',
       description:
           'Embark on a personalized culinary journey with our dedicated one-to-one customer support, ensuring a seamless and satisfying experience every step of the way.',
@@ -236,12 +237,21 @@ class _OnboardingState extends ConsumerState<Onboarding>
                       : Positioned(
                           left: 30,
                           top: 20,
-                          child: Text(
-                            'Get Started',
-                            style: apptheme.appfonttheme(
-                              color: const Color(0xFF6318AF),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
+                          child: InkWell(
+                            onTap: () => {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: ((context) =>
+                                          const LoginSignup())))
+                            },
+                            child: Text(
+                              'Get Started',
+                              style: apptheme.appfonttheme(
+                                color: const Color(0xFF6318AF),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                         ), //Render the GetStarted if Last page

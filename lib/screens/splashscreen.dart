@@ -1,9 +1,13 @@
 import 'package:craftui/components/leftcloud.dart';
 import 'package:craftui/components/rightcloud.dart';
 import 'package:craftui/constants/apptheme.dart';
+import 'package:craftui/screens/homescreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'onboardscreen.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -74,6 +78,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   Widget build(BuildContext context) {
     final appTheme = AppTheme();
+    Future.delayed(const Duration(seconds: 5), () {
+      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        if (user == null) {
+          // User is not authenticated, show LoginSignup screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Onboarding()),
+          );
+        } else {
+          // User is authenticated, navigate to Home screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Home()),
+          );
+        }
+      });
+    });
 
     return Scaffold(
       backgroundColor: appTheme.splashscreenbg,

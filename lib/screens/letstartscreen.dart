@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:craftui/components/appbar.dart';
 import 'package:craftui/constants/apptheme.dart';
+import 'package:craftui/screens/homescreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LetsStart extends ConsumerStatefulWidget {
-  const LetsStart({super.key});
+  const LetsStart({super.key, required this.phoneno});
 
+  final String phoneno;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LetsStartState();
 }
@@ -15,8 +19,43 @@ class _LetsStartState extends ConsumerState<LetsStart> {
   final TextEditingController _fullname = TextEditingController();
   final TextEditingController _emailid = TextEditingController();
 
+  void _savetoDatabase() async {
+    String fullname = _fullname.text;
+    String email = _emailid.text;
+
+    // Save to Firestore
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    DocumentReference userRef = await firestore.collection('users').add({
+      'fullname': fullname,
+      'email': email,
+    });
+
+    // Get the current user
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    // Update display name and email in FirebaseAuth
+    if (currentUser != null) {
+      try {
+        // Update display name
+        await currentUser.updateDisplayName(fullname);
+        print('Display name updated successfully');
+
+        // Update email
+        await currentUser.updateEmail(email);
+        print('Email updated successfully');
+      } catch (e) {
+        print('Failed to update display name and email: $e');
+      }
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const Home()));
+    }
+
+    // Data saved successfully
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(FirebaseAuth.instance.currentUser);
     return Scaffold(
       appBar: const AppbarCustom(title: "", color: 0xFFFFFFF),
       body: Stack(
@@ -109,14 +148,17 @@ class _LetsStartState extends ConsumerState<LetsStart> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Center(
-                child: Text(
-                  'Let\'s Start',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontFamily: 'Lexend',
-                    fontWeight: FontWeight.w400,
+              child: Center(
+                child: TextButton(
+                  onPressed: _savetoDatabase,
+                  child: const Text(
+                    "Let's Start",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontFamily: 'Lexend',
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
               ),

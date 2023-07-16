@@ -1,4 +1,5 @@
 import 'package:craftui/constants/apptheme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../components/loginscreencloud.dart';
 import '../constants/appDimensions.dart';
+import 'otp_screen.dart';
 
 class LoginSignup extends ConsumerStatefulWidget {
   const LoginSignup({Key? key}) : super(key: key);
@@ -18,7 +20,8 @@ class LoginSignup extends ConsumerStatefulWidget {
 
 class _LoginSignupState extends ConsumerState<LoginSignup> {
   final appTheme = AppTheme();
-
+  String phoneNumber = "0";
+  FirebaseAuth auth = FirebaseAuth.instance;
   void launchURL(String url) async {
     //To Launch the Privary and Terms of service in browser
     final Uri url0 = Uri.parse(url);
@@ -95,11 +98,16 @@ class _LoginSignupState extends ConsumerState<LoginSignup> {
                 countries: countries
                     .where((country) => country.name == 'India')
                     .toList(),
+                onSaved: (_) {},
+                style: appTheme.appfonttheme(fontSize: 16),
+                onSubmitted: (phoneNumber) async {},
                 decoration: InputDecoration(
                   hintStyle: appTheme.appfonttheme(
                       color: const Color(0xFFAAAAAA),
                       fontWeight: FontWeight.w400),
                   labelText: 'Enter Phone Number',
+                  labelStyle: appTheme.appfonttheme(
+                      fontSize: 14, fontWeight: FontWeight.w300),
                   border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(
                         6)), // Adjust the radius as per your preference
@@ -108,7 +116,9 @@ class _LoginSignupState extends ConsumerState<LoginSignup> {
                 ),
                 initialCountryCode: 'IN',
                 onChanged: (phone) {
-                  print(phone.completeNumber);
+                  setState(() {
+                    phoneNumber = phone.completeNumber;
+                  });
                 },
               ),
             ),
@@ -121,18 +131,53 @@ class _LoginSignupState extends ConsumerState<LoginSignup> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      'Continue',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontFamily: 'Lexend',
-                        fontWeight: FontWeight.w400,
+                    GestureDetector(
+                      onTap: () async => {
+                        await FirebaseAuth.instance.verifyPhoneNumber(
+                          phoneNumber: phoneNumber,
+                          verificationCompleted:
+                              (PhoneAuthCredential credential) async {
+                            // Automatic verification on Android devices
+                            await FirebaseAuth.instance
+                                .signInWithCredential(credential);
+                          },
+                          verificationFailed: (FirebaseAuthException e) {
+                            // Verification failed
+                            print('Verification Failed: ${e.message}');
+                          },
+                          codeSent: (String verificationId, int? resendToken) {
+                            setState(() {
+                              verificationId = verificationId;
+                            });
+                            // Navigate to the OTP screen
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Otp(
+                                      verificationId: verificationId,
+                                      phoneno: phoneNumber)),
+                            );
+                          },
+                          codeAutoRetrievalTimeout: (String verificationId) {
+                            setState(() {
+                              verificationId = verificationId;
+                            });
+                          },
+                        )
+                      },
+                      child: const Text(
+                        'Continue',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 17,
+                          fontFamily: 'Lexend',
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                   ],
